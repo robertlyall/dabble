@@ -37,10 +37,6 @@
       "target": "AppImage"
     },
     "win": {
-      "publish": {
-        "bucket": "dabblereleases",
-        "provider": "s3"
-      },
       "target": [
         "nsis"
       ]
