@@ -2,6 +2,9 @@ os: unstable
 cache:
   - node_modules
 environment:
+  AWS_ACCESS_KEY_ID: AKIAJ75CYDWRU7J7QM7A
+  AWS_SECRET_ACCESS_KEY:
+    secure: /E36X19175VER3eEtvxWiO7EFTipjemLan0swbX4yPktzQ1awLRdZGxnrqFkNFCW
   GH_TOKEN:
     secure: WqSk4u43m/UWvmezbAPk+/wWcEpWyVgyRvbcx6rWHkjjYzD86hMgJHvPGcoyDg8P
   matrix:
@@ -12,6 +15,8 @@ install:
   - npm install -g npm@latest
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
+  - npm run build
+  - npm run release -- --transport-accessKeyId $env:AWS_ACCESS_KEY_ID --transport-secretAccessKey $env:AWS_SECRET_ACCESS_KEY
 matrix:
   fast_finish: true
 build: off

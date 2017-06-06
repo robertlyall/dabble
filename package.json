@@ -1,6 +1,7 @@
 {
   "name": "dabble",
   "author": "Robert Lyall",
+  "description": "A sandbox application designed for testing various Electron things",
   "version": "1.0.0",
   "main": "index.js",
   "repository": {},
@@ -12,8 +13,8 @@
     "react-dom": "^15.5.4"
   },
   "scripts": {
-    "dist": "build",
-    "publish": "publish",
+    "build": "build",
+    "release": "publish",
     "start": "electron ."
   },
   "devDependencies": {
@@ -30,15 +31,16 @@
   },
   "build": {
     "appId": "com.dabble",
-    "directories": {
-      "output": "release"
-    },
     "linux": {
       "category": "Office",
       "synopsis": "Desktop client for Natterly",
       "target": "AppImage"
     },
     "win": {
+      "publish": {
+        "bucket": "dabblereleases",
+        "provider": "s3"
+      },
       "target": [
         "nsis"
       ]
@@ -46,6 +48,6 @@
     "productName": "Dabble"
   },
   "updater": {
-    "url": "http://10.0.2.120:8080/updates.json"
+    "url": "https://dabblereleases.s3.amazonaws.com/updates.json"
   }
 }

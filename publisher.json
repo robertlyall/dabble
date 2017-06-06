@@ -1,6 +1,6 @@
 {
   "transport": {
-    "module": "local",
-    "remoteUrl": "http://example.com/updates"
+    "bucket": "dabblereleases",
+    "module": "s3"
   }
 }
