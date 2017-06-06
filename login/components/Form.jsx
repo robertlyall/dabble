@@ -5,30 +5,37 @@ import authenticate from "../utilities/authenticate";
 export default class Form extends Component {
   constructor(props) {
     super(props);
+
     this.state = { pending: false };
+
+    this.handleError = this.handleError.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getCredentials() {
+    const formData = new FormData(this.form);
+    return [formData.get("email"), formData.get("password")];
+  }
+
+  handleError(error) {
+    this.setState({ pending: false });
+    alert("The email/password combination entered was incorrect!");
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    const formData = new FormData(this.form);
     this.setState({ pending: true });
 
-    console.log("email", formData.get("email"));
-    console.log("password", formData.get("password"));
+    const [email, password] = this.getCredentials();
 
-    authenticate(formData.get("email"), formData.get("password"))
-      .then(data => {
-        console.log({ data });
-        ipcRenderer.send("login", data);
-      })
-      .catch(error => {
-        console.log(error);
-        console.log("caught");
-        this.setState({ pending: false });
-        alert("The email/password combination entered was incorrect!");
-      });
+    authenticate(email, password)
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  }
+
+  handleSuccess(data) {
+    ipcRenderer.send("login", data);
   }
 
   render() {
