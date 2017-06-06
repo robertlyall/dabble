@@ -12,7 +12,7 @@
     "react-dom": "^15.5.4"
   },
   "scripts": {
-    "build": "build --linux",
+    "dist": "build",
     "publish": "publish",
     "start": "electron ."
   },
@@ -29,10 +29,19 @@
   },
   "build": {
     "appId": "com.dabble",
+    "category": "public.app-category.education",
+    "directories": {
+      "output": "release"
+    },
     "linux": {
       "category": "Office",
       "synopsis": "Desktop client for Natterly",
       "target": "AppImage"
+    },
+    "windows": {
+      "target": [
+        "squirrel"
+      ]
     },
     "productName": "Dabble"
   },
