@@ -41,7 +41,7 @@
         "nsis"
       ]
     },
-    "publish": "never",
+    "publish": null,
     "productName": "Dabble"
   },
   "updater": {
