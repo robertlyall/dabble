@@ -40,7 +40,7 @@
     },
     "win": {
       "target": [
-        "squirrel"
+        "nsis"
       ]
     },
     "productName": "Dabble"
