@@ -28,7 +28,8 @@ class UpdateBanner extends Component {
       checkingForUpdate: false,
       updateAvailable: null,
       updateDownloaded: false,
-      updateDownloading: false
+      updateDownloading: false,
+      updateError: false
     };
 
     this.handleDownloadButtonClick = this.handleDownloadButtonClick.bind(this);
@@ -36,14 +37,14 @@ class UpdateBanner extends Component {
     this.handleUpdateAvailable = this.handleUpdateAvailable.bind(this);
     this.handleUpdateDownloaded = this.handleUpdateDownloaded.bind(this);
     this.handleUpdateDownloading = this.handleUpdateDownloading.bind(this);
+    this.handleUpdateError = this.handleUpdateError.bind(this);
     this.handleUpdateNotAvailable = this.handleUpdateNotAvailable.bind(this);
   }
 
   checkForUpdate() {
-    console.log("Check for update!");
-
     this.setState({
-      checkingForUpdate: true
+      checkingForUpdate: true,
+      updateError: false
     });
 
     ipcRenderer.send("check-for-update");
@@ -53,6 +54,7 @@ class UpdateBanner extends Component {
     ipcRenderer.on("update-available", this.handleUpdateAvailable);
     ipcRenderer.on("update-downloaded", this.handleUpdateAvailable);
     ipcRenderer.on("update-downloading", this.handleUpdateNotAvailable);
+    ipcRenderer.on("update-error", this.handleUpdateError);
     ipcRenderer.on("update-not-available", this.handleUpdateNotAvailable);
 
     this.checkForUpdate();
@@ -99,9 +101,17 @@ class UpdateBanner extends Component {
   }
 
   handleUpdateDownloading() {
-    console.log("#handleUpdateDownloading");
     this.setState({
       updateDownloading: true
+    });
+  }
+
+  handleUpdateError() {
+    this.setState({
+      checkedOnce: true,
+      checkingForUpdate: false,
+      updateDownloading: false,
+      updateError: false
     });
   }
 
@@ -113,6 +123,10 @@ class UpdateBanner extends Component {
   }
 
   render() {
+    if (this.state.updateError) {
+      return <p style={{ color: "red" }}>There was an error!</p>;
+    }
+
     if (this.state.checkingForUpdate) {
       return <p>Checking for update…</p>;
     }
@@ -153,6 +167,7 @@ class UpdateBanner extends Component {
     ipcRenderer.off("update-available", this.handleUpdateAvailable);
     ipcRenderer.off("update-downloaded", this.handleUpdateDownloaded);
     ipcRenderer.off("update-downloading", this.handleUpdateDownloading);
+    ipcRenderer.off("update-error", this.handleUpdateError);
     ipcRenderer.off("update-not-available", this.handleUpdateNotAvailable);
   }
 }

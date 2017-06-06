@@ -11,3 +11,9 @@ ReactDOM.render(
   </div>,
   document.getElementById("root")
 );
+
+ipcRenderer.on("before-quit-callback", () => {
+  setTimeout(() => {
+    ipcRenderer.send("quit", "My async message!");
+  }, 1000);
+});

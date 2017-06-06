@@ -1,9 +1,14 @@
-const { BrowserWindow, app, ipcMain } = require("electron");
+const { BrowserWindow, Tray, app, ipcMain } = require("electron");
+const path = require("path");
 const updater = require("electron-simple-updater");
 const Store = require("./store");
 
 const store = new Store();
+
+let canQuit = false;
 let currentWindow = null;
+let quitting = false;
+let tray = null;
 
 function createApplicationWindow() {
   const win = new BrowserWindow({
@@ -13,6 +18,28 @@ function createApplicationWindow() {
 
   win.on("closed", () => {
     currentWindow = null;
+  });
+
+  win.on("close", () => {
+    if (quitting) return;
+
+    event.preventDefault();
+
+    tray = new Tray();
+
+    tray.setToolTip("Dabble");
+
+    tray.on("click", () => {
+      win.show();
+      tray = null;
+    });
+
+    win.on("show", () => {
+      console.log("Show!");
+      tray = null;
+    });
+
+    win.hide();
   });
 
   win.loadURL(`file://${__dirname}/app/index.html`);
@@ -29,8 +56,27 @@ function createLoginWindow() {
     width: 1000
   });
 
+  function displayTray() {
+    tray = new Tray(path.join(__dirname, "icon.png"));
+    tray.setToolTip("Dabble");
+    tray.on("click", () => win.show());
+  }
+
   win.on("closed", () => {
     currentWindow = null;
+  });
+
+  win.on("close", event => {
+    if (quitting) return;
+    event.preventDefault();
+    if (process.platform === "win32") displayTray();
+    win.hide();
+  });
+
+  win.on("show", () => {
+    if (tray === null) return;
+    tray.destroy();
+    tray = null;
   });
 
   win.loadURL(`file://${__dirname}/login/index.html`);
@@ -49,7 +95,7 @@ app.on("ready", () => {
   updater.init({
     autoDownload: false,
     checkUpdateOnStart: false,
-    url: "http://10.0.2.120:8080/updates.json"
+    url: "https://dabblereleases.s3.amazonaws.com/updates.json"
   });
 });
 
@@ -63,7 +109,10 @@ updater.on("checking-for-update", () => {
 });
 
 updater.on("error", error => {
-  console.log({ error });
+  checkingForUpdate = false;
+  downloadingUpdate = false;
+
+  currentWindow.webContents.send("update-error");
 });
 
 updater.on("update-available", meta => {
@@ -80,8 +129,6 @@ updater.on("update-available", meta => {
 updater.on("update-downloaded", meta => {
   downloadingUpdate = false;
   updateDownloaded = true;
-
-  console.log("Downloaded!");
 
   currentWindow.webContents.send("update-downloaded");
 });
@@ -115,6 +162,8 @@ ipcMain.on("download-update", () => {
 
 ipcMain.on("install-update", () => {
   if (!updateDownloaded) return;
+  canQuit = true;
+  quitting = true;
   updater.quitAndInstall();
 });
 
@@ -128,4 +177,27 @@ ipcMain.on("logout", event => {
   store.clear();
   applicationWondow.close();
   currentWindow = createLoginWindow();
+});
+
+app.on("activate", () => {
+  if (currentWindow) {
+    currentWindow.show();
+  }
+
+  if (tray) {
+    tray.destroy();
+    tray = null;
+  }
+});
+
+app.on("before-quit", event => {
+  if (canQuit) return;
+  event.preventDefault();
+  currentWindow.webContents.send("before-quit-callback");
+  quitting = true;
+});
+
+ipcMain.on("quit", (event, message) => {
+  canQuit = true;
+  app.quit();
 });
