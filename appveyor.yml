@@ -16,7 +16,6 @@ install:
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
   - npm run build
-  - npm run release -- --transport-accessKeyId $env:AWS_ACCESS_KEY_ID --transport-secretAccessKey $env:AWS_SECRET_ACCESS_KEY
 matrix:
   fast_finish: true
 build: off
@@ -24,4 +23,4 @@ version: "{build}"
 shallow_clone: true
 clone_depth: 1
 test_script:
-  - npm run dist
+  - npm run release -- --transport-accessKeyId $env:AWS_ACCESS_KEY_ID --transport-secretAccessKey $env:AWS_SECRET_ACCESS_KEY
