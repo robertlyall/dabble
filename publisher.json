@@ -1,0 +1,6 @@
+{
+  "transport": {
+    "module": "local",
+    "remoteUrl": "http://example.com/updates"
+  }
+}

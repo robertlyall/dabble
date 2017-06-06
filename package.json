@@ -1,0 +1,42 @@
+{
+  "name": "dabble",
+  "author": "Robert Lyall",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "electron-simple-updater": "^1.2.0",
+    "lodash": "^4.17.4",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "scripts": {
+    "build": "build --linux",
+    "publish": "publish",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-react": "^6.24.1",
+    "electron": "^1.6.10",
+    "electron-builder": "^18.3.5",
+    "electron-simple-publisher": "^0.4.6",
+    "webpack": "^2.6.1"
+  },
+  "build": {
+    "appId": "com.dabble",
+    "linux": {
+      "category": "Office",
+      "synopsis": "Desktop client for Natterly",
+      "target": "AppImage"
+    },
+    "productName": "Dabble"
+  },
+  "updater": {
+    "url": "http://10.0.2.120:8080/updates.json"
+  }
+}
