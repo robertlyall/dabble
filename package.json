@@ -24,6 +24,7 @@
     "babel-preset-react": "^6.24.1",
     "electron": "^1.6.10",
     "electron-builder": "^18.3.5",
+    "electron-builder-squirrel-windows": "^18.5.0",
     "electron-simple-publisher": "^0.4.6",
     "webpack": "^2.6.1"
   },
