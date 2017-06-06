@@ -29,7 +29,6 @@
   },
   "build": {
     "appId": "com.dabble",
-    "category": "public.app-category.education",
     "directories": {
       "output": "release"
     },
@@ -38,7 +37,7 @@
       "synopsis": "Desktop client for Natterly",
       "target": "AppImage"
     },
-    "windows": {
+    "win": {
       "target": [
         "squirrel"
       ]
